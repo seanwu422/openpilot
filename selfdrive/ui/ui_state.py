@@ -79,6 +79,9 @@ class UIState:
     self._offroad_transition_callbacks: list[Callable[[], None]] = []
     self._engaged_transition_callbacks: list[Callable[[], None]] = []
 
+    # dp
+    self.dp_ui_display_mode = 0
+
     self.update_params()
 
   def add_offroad_transition_callback(self, callback: Callable[[], None]):
@@ -134,6 +137,11 @@ class UIState:
 
     self.is_metric = self.params.get_bool("IsMetric")
 
+    # dp
+    self.dp_ui_display_mode = int(self.params.get("dp_ui_display_mode") or 0)
+    self.dp_ui_display_mode_cruise_available = False
+    self.dp_ui_display_mode_cruise_enabled = False
+
   def _update_status(self) -> None:
     if self.started and self.sm.updated["selfdriveState"]:
       ss = self.sm["selfdriveState"]
@@ -159,6 +167,11 @@ class UIState:
 
       for callback in self._offroad_transition_callbacks:
         callback()
+
+    # dp
+    if self.sm.updated["carState"]:
+      self.dp_ui_display_mode_cruise_available = self.sm["carState"].cruiseState.available
+      self.dp_ui_display_mode_cruise_enabled = self.sm["carState"].cruiseState.enabled
 
       self._started_prev = self.started
 
@@ -232,6 +245,48 @@ class Device:
         self._brightness_thread.start()
         self._last_brightness = brightness
 
+  # // Display Mode
+  # // 0 Std. - Stock behavior.
+  # // 1 MAIN+ - ACC MAIN on = Display ON
+  # // 2 OP+ - OP enabled = Display ON
+  # // 3 MAIN- - ACC MAIN on = Display OFF
+  # // 4 OP- - OP enabled = Display OFF
+  def ignore_state_ovrride(self, ignition):
+    # 0 stock behaviour or ignition is off
+    if ui_state.dp_ui_display_mode == 0 or not ignition:
+      return ignition
+
+    # 1 MAIN+ - ACC MAIN on = Display ON
+    if ui_state.dp_ui_display_mode == 1:
+      if ui_state.dp_ui_display_mode_cruise_available:
+        return True
+      else:
+        return False
+
+    # 2 OP+ - OP enabled = Display ON
+    if ui_state.dp_ui_display_mode == 2:
+      if ui_state.dp_ui_display_mode_cruise_enabled:
+        return True
+      else:
+        return False
+
+    # 3 MAIN- - ACC MAIN on = Display OFF
+    if ui_state.dp_ui_display_mode == 3:
+      if ui_state.dp_ui_display_mode_cruise_available:
+        return False
+      else:
+        return True
+
+    # 4 OP- - OP enabled = Display OFF
+    if ui_state.dp_ui_display_mode == 4:
+      if ui_state.dp_ui_display_mode_cruise_enabled:
+        return False
+      else:
+        return True
+
+    # oops
+    return ignition
+
   def _update_wakefulness(self):
     # Handle interactive timeout
     ignition_just_turned_off = not ui_state.ignition and self._ignition
@@ -246,7 +301,9 @@ class Device:
         callback()
     self._prev_timed_out = interaction_timeout
 
-    self._set_awake(ui_state.ignition or not interaction_timeout)
+    ignition = self.ignore_state_ovrride(ui_state.ignition)
+
+    self._set_awake(ignition or not interaction_timeout)
 
   def _set_awake(self, on: bool):
     if on != self._awake:

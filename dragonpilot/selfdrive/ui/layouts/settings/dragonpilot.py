@@ -66,6 +66,14 @@ class DragonpilotLayout(Widget):
   def _device_toggles(self):
     self._toggles["title_dev"] = simple_item(title=lambda: tr("### Device ###"))
 
+    self._toggles["dp_ui_display_mode"] = text_spin_button_item(
+      title=lambda: tr("Display Mode"),
+      callback=lambda val: self._params.put("dp_ui_display_mode", val),
+      options=["Std.", "MAIN+", "OP+", "MAIN-", "OP-"],
+      initial_index=int(self._params.get("dp_ui_display_mode") or 0),
+      description=lambda: tr("Std.: Stock behavior.<br>MAIN+: ACC MAIN on = Display ON.<br>OP+: OP enabled = Display ON.<br>MAIN-: ACC MAIN on = Display OFF<br>OP-: OP enabled = Display OFF."),
+    )
+
   def _reset_dp_conf(self):
     def reset_dp_conf(result: int):
       # Check engaged again in case it changed while the dialog was open
