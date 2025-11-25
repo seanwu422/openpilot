@@ -162,7 +162,8 @@ class UIState:
       self.dp_alka_active = self.sm["dpControlsState"].alkaActive
 
     # dp
-    self.dp_ui_display_mode = int(self.params.get("dp_ui_display_mode_v2") or 0)
+    self.dp_ui_display_mode = int(self.params.get("dp_ui_display_mode") or 0)
+    self.dp_ui_display_mode_cruise_available = False
     self.dp_ui_display_mode_cruise_enabled = False
 
   def _update_status(self) -> None:
@@ -191,11 +192,12 @@ class UIState:
       for callback in self._offroad_transition_callbacks:
         callback()
 
+      self._started_prev = self.started
+
     # dp
     if self.sm.updated["carState"]:
+      self.dp_ui_display_mode_cruise_available = self.sm["carState"].cruiseState.available
       self.dp_ui_display_mode_cruise_enabled = self.sm["carState"].cruiseState.enabled
-
-      self._started_prev = self.started
 
   def update_params(self) -> None:
     # For slower operations
@@ -269,22 +271,38 @@ class Device:
 
   # // Display Mode
   # // 0 Std. - Stock behavior.
-  # // 1 OP+ - OP enabled = Display ON
-  # // 2 OP- - OP enabled = Display OFF
+  # // 1 MAIN+ - ACC MAIN on = Display ON
+  # // 2 OP+ - OP enabled = Display ON
+  # // 3 MAIN- - ACC MAIN on = Display OFF
+  # // 4 OP- - OP enabled = Display OFF
   def ignore_state_ovrride(self, ignition):
     # 0 stock behaviour or ignition is off
     if ui_state.dp_ui_display_mode == 0 or not ignition:
       return ignition
 
-    # 1 OP+ - OP enabled = Display ON
+    # 1 MAIN+ - ACC MAIN on = Display ON
     if ui_state.dp_ui_display_mode == 1:
+      if ui_state.dp_ui_display_mode_cruise_available:
+        return True
+      else:
+        return False
+
+    # 2 OP+ - OP enabled = Display ON
+    if ui_state.dp_ui_display_mode == 2:
       if ui_state.dp_ui_display_mode_cruise_enabled:
         return True
       else:
         return False
 
-    # 2 OP- - OP enabled = Display OFF
-    if ui_state.dp_ui_display_mode == 2:
+    # 3 MAIN- - ACC MAIN on = Display OFF
+    if ui_state.dp_ui_display_mode == 3:
+      if ui_state.dp_ui_display_mode_cruise_available:
+        return False
+      else:
+        return True
+
+    # 4 OP- - OP enabled = Display OFF
+    if ui_state.dp_ui_display_mode == 4:
       if ui_state.dp_ui_display_mode_cruise_enabled:
         return False
       else:

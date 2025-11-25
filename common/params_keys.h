@@ -134,7 +134,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"dp_dev_monitoring_disabled", {PERSISTENT, BOOL, "0"}},
     {"dp_dev_beep", {PERSISTENT, BOOL, "0"}},
     {"dp_lat_alka", {PERSISTENT, BOOL, "0"}},
-    {"dp_ui_display_mode_v2", {PERSISTENT, INT, "0"}},
+    {"dp_ui_display_mode", {PERSISTENT, INT, "0"}},
     {"dp_dev_model_selected", {PERSISTENT, STRING}},
     {"dp_dev_model_list", {PERSISTENT, STRING}},
     {"dp_lat_lca_speed", {PERSISTENT, INT, "20"}},

@@ -224,12 +224,12 @@ class DragonpilotLayout(Widget):
         callback=lambda val: self._params.put_bool("dp_dev_beep", val),
       )
 
-    self._toggles["dp_ui_display_mode_v2"] = text_spin_button_item(
+    self._toggles["dp_ui_display_mode"] = text_spin_button_item(
       title=lambda: tr("Display Mode"),
-      callback=lambda val: self._params.put("dp_ui_display_mode_v2", val),
-      options=["Std.", "OP+", "OP-"],
-      initial_index=int(self._params.get("dp_ui_display_mode_v2") or 0),
-      description=lambda: tr("Std.: Stock behavior.<br>OP+: OP enabled = Display ON.<br>OP-: OP enabled = Display OFF."),
+      callback=lambda val: self._params.put("dp_ui_display_mode", val),
+      options=["Std.", "MAIN+", "OP+", "MAIN-", "OP-"],
+      initial_index=int(self._params.get("dp_ui_display_mode") or 0),
+      description=lambda: tr("Std.: Stock behavior.<br>MAIN+: ACC MAIN on = Display ON.<br>OP+: OP enabled = Display ON.<br>MAIN-: ACC MAIN on = Display OFF<br>OP-: OP enabled = Display OFF."),
     )
 
     if "LITE" not in os.environ:
