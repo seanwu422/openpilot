@@ -43,6 +43,14 @@ static void nissan_rx_hook(const CANPacket_t *msg) {
         brake_pressed = ((msg->data[4] >> 5) & 1U) != 0U;
       }
     }
+
+    if ((msg->bus == 0U) && (msg->addr == 0x239U)) {
+      acc_main_on = GET_BIT(msg, 17U);
+    }
+
+    if ((msg->bus == (nissan_alt_eps ? 2U : 1U)) && (msg->addr == 0x1B6U)) {
+      acc_main_on = GET_BIT(msg, 36U);
+    }
   }
 
   // Handle cruise enabled

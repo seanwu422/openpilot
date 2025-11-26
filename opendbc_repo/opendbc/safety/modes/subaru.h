@@ -107,6 +107,7 @@ static void subaru_rx_hook(const CANPacket_t *msg) {
 
   // enter controls on rising edge of ACC, exit controls on ACC off
   if ((msg->addr == MSG_SUBARU_CruiseControl) && (msg->bus == alt_main_bus)) {
+    acc_main_on = GET_BIT(msg, 40U);
     bool cruise_engaged = (msg->data[5] >> 1) & 1U;
     pcm_cruise_check(cruise_engaged);
   }

@@ -159,6 +159,14 @@ static void toyota_rx_hook(const CANPacket_t *msg) {
 
       UPDATE_VEHICLE_SPEED(speed / 4.0 * 0.01 * KPH_TO_MS);
     }
+
+    if (msg->addr == 0x1D3U) {
+      acc_main_on = GET_BIT(msg, 15U);
+    }
+
+    if (msg->addr == 0x365U) {
+      acc_main_on = GET_BIT(msg, 0U);
+    }
   }
 }
 

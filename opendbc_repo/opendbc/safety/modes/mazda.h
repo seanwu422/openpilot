@@ -32,6 +32,7 @@ static void mazda_rx_hook(const CANPacket_t *msg) {
 
     // enter controls on rising edge of ACC, exit controls on ACC off
     if (msg->addr == MAZDA_CRZ_CTRL) {
+      acc_main_on = GET_BIT(msg, 17U);
       bool cruise_engaged = msg->data[0] & 0x8U;
       pcm_cruise_check(cruise_engaged);
     }
