@@ -25,6 +25,7 @@ class TogglesLayoutMici(NavWidget):
     record_front = BigParamControl("record & upload driver camera", "RecordFront", toggle_callback=restart_needed_callback)
     record_mic = BigParamControl("record & upload mic audio", "RecordAudio", toggle_callback=restart_needed_callback)
     enable_openpilot = BigParamControl("enable openpilot", "OpenpilotEnabledToggle", toggle_callback=restart_needed_callback)
+    four_mode = BigParamControl("C4 UI Mode", "dp_ui_four")
 
     self._scroller = Scroller([
       self._personality_toggle,
@@ -35,6 +36,7 @@ class TogglesLayoutMici(NavWidget):
       record_front,
       record_mic,
       enable_openpilot,
+      four_mode,
     ], snap_items=False)
 
     # Toggle lists
@@ -46,8 +48,10 @@ class TogglesLayoutMici(NavWidget):
       ("RecordFront", record_front),
       ("RecordAudio", record_mic),
       ("OpenpilotEnabledToggle", enable_openpilot),
+      ("dp_ui_four", four_mode),
     )
 
+    four_mode.set_enabled(gui_app.big_ui())
     enable_openpilot.set_enabled(lambda: not ui_state.engaged)
     record_front.set_enabled(False if ui_state.params.get_bool("RecordFrontLock") else (lambda: not ui_state.engaged))
     record_mic.set_enabled(lambda: not ui_state.engaged)

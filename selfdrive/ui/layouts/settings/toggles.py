@@ -36,6 +36,7 @@ DESCRIPTIONS = {
   "RecordAudio": tr_noop("Record and store microphone audio while driving. The audio will be included in the dashcam video in comma connect."),
   "DisableLogging": tr_noop("Disable logging service"),
   "DisableUpdates": tr_noop("Disable update service"),
+  "dp_ui_four": tr_noop("Why Not?<br>Note, you will only see stock UI / toggles, no customize settings will be available under this mode."),
 }
 
 
@@ -104,6 +105,12 @@ class TogglesLayout(Widget):
       "DisableUpdates": (
         lambda: tr("Disable Updates"),
         DESCRIPTIONS["DisableUpdates"],
+        "",
+        False,
+      ),
+      "dp_ui_four": (
+        lambda: tr("C4 UI Mode"),
+        DESCRIPTIONS["dp_ui_four"],
         "",
         False,
       ),

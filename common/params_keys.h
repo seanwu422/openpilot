@@ -160,4 +160,5 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"dp_vag_a0_sng", {PERSISTENT, BOOL, "0"}},
     {"dp_vag_pq_steering_patch", {PERSISTENT, BOOL, "0"}},
     {"dp_vag_avoid_eps_lockout", {PERSISTENT, BOOL, "0"}},
+    {"dp_ui_four", {PERSISTENT, BOOL, "0"}},
 };
