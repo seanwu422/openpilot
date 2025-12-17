@@ -186,7 +186,7 @@ SETTINGS = [
         "condition": "not MICI",
       },
       {
-        "key": "dp_ui_",
+        "key": "dp_ui_mici",
         "type": "toggle_item",
         "title": "Use MICI (comma four) UI",
         "description": "Why not?",
