@@ -1192,6 +1192,7 @@ FW_VERSIONS = {
   CAR.KIA_CARNIVAL_2025: {
     (Ecu.fwdCamera, 0x7c4, None): [
       b'\xf1\x00KA4 MFC  AT USA LHD 1.00 1.05 99210-R0500 240305',
+      b'\xf1\x00KA4 MFC  AT EUR LHD 1.00 1.00 99210-R0700 250324',
     ],
     (Ecu.fwdRadar, 0x7d0, None): [
       b'\xf1\x00KA4_ SCC FHCUP      1.00 1.01 99110-R0510         ',
