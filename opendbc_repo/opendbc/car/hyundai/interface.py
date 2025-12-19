@@ -42,7 +42,8 @@ class CarInterface(CarInterfaceBase):
         ret.alphaLongitudinalAvailable = False
 
       ret.enableBsm = 0x1e5 in fingerprint[CAN.ECAN]
-
+      ret.enableBsm = False
+      
       # Check if the car is hybrid. Only HEV/PHEV cars have 0xFA on E-CAN.
       if 0xFA in fingerprint[CAN.ECAN]:
         ret.flags |= HyundaiFlags.HYBRID.value
@@ -54,11 +55,13 @@ class CarInterface(CarInterfaceBase):
           ret.flags |= HyundaiFlags.CANFD_LKA_STEERING_ALT.value
       else:
         # no LKA steering
-        if 0x1cf not in fingerprint[CAN.ECAN]:
-          ret.flags |= HyundaiFlags.CANFD_ALT_BUTTONS.value
+
         if not ret.flags & HyundaiFlags.RADAR_SCC:
           ret.flags |= HyundaiFlags.CANFD_CAMERA_SCC.value
-
+          
+      if 0x1cf not in fingerprint[CAN.ECAN]:
+        ret.flags |= HyundaiFlags.CANFD_ALT_BUTTONS.value
+        
       # Some LKA steering cars have alternative messages for gear checks
       # ICE cars do not have 0x130; GEARS message on 0x40 or 0x70 instead
       if 0x130 not in fingerprint[CAN.ECAN]:
@@ -151,7 +154,8 @@ class CarInterface(CarInterfaceBase):
     # TODO: Optima Hybrid 2017 uses a different SCC12 checksum
     if candidate in (CAR.KIA_OPTIMA_H,):
       ret.dashcamOnly = True
-
+    elif candidate == CAR.KIA_CARNIVAL_HEV_4TH_GEN:
+      ret.steerActuatorDelay = 0.35
     # w/ SMDPS, allow steering to 0
     if 0x2AA in fingerprint[0]:
       ret.minSteerSpeed = 0.
